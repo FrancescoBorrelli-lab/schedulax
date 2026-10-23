@@ -48,4 +48,24 @@ void main() {
       throwsA(isA<SlotUnavailableException>()),
     );
   });
+
+  test(
+    'i dati di esempio non si sovrappongono e restano prenotabili gli altri slot',
+    () async {
+      final now = DateTime(2030, 1, 7, 8);
+      final repo = InMemoryBookingRepository.withSampleData(now: now);
+      final all = await repo.getAll();
+      expect(all, isNotEmpty);
+      // Lo slot già occupato dall'esempio delle 11:00 di oggi non è più disponibile.
+      expect(
+        () => repo.book(customerName: 'Test', start: DateTime(2030, 1, 7, 11)),
+        throwsA(isA<SlotUnavailableException>()),
+      );
+      final free = await repo.book(
+        customerName: 'Test',
+        start: DateTime(2030, 1, 7, 12),
+      );
+      expect(free.start.hour, 12);
+    },
+  );
 }

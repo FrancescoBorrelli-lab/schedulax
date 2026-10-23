@@ -7,5 +7,5 @@ import 'src/shared/data/booking_repository.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('it');
-  runApp(SchedulaXApp(repository: InMemoryBookingRepository()));
+  runApp(SchedulaXApp(repository: InMemoryBookingRepository.withSampleData()));
 }

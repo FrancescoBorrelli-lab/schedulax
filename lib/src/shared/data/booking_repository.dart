@@ -29,11 +29,37 @@ class InMemoryBookingRepository implements BookingRepository {
     List<Booking> seed = const [],
   }) : _bookings = [...seed];
 
+  /// Archivio con qualche prenotazione fittizia nei prossimi giorni, per le demo.
+  factory InMemoryBookingRepository.withSampleData({DateTime? now}) {
+    final today = now ?? DateTime.now();
+    DateTime at(int dayOffset, int hour) =>
+        DateTime(today.year, today.month, today.day + dayOffset, hour);
+    const names = [
+      'Marco R.',
+      'Giulia S.',
+      'Andrea P.',
+      'Chiara L.',
+      'Luca M.',
+    ];
+    final slots = [(0, 11), (0, 15), (1, 9), (1, 16), (2, 10)];
+    return InMemoryBookingRepository(
+      seed: [
+        for (var i = 0; i < slots.length; i++)
+          Booking(
+            id: 'demo${i + 1}',
+            customerName: names[i],
+            start: at(slots[i].$1, slots[i].$2),
+            duration: const WorkingHours().slotDuration,
+          ),
+      ],
+    );
+  }
+
   @override
   final WorkingHours hours;
 
   final List<Booking> _bookings;
-  int _nextId = 1;
+  int _nextId = 100;
 
   @override
   Future<List<Booking>> getAll() async => List.unmodifiable(_bookings);
