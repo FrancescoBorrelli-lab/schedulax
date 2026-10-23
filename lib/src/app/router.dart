@@ -6,6 +6,12 @@ import '../mobile/history_page.dart';
 import '../web/admin_dashboard_page.dart';
 import 'adaptive_shell.dart';
 
+/// Le tre sezioni sono destinazioni di una barra di navigazione, non pagine
+/// "in pila": il cambio è immediato. Con la transizione predefinita le pagine,
+/// senza sfondo proprio, restano visibili insieme per qualche istante.
+Page<void> _destination(GoRouterState state, Widget child) =>
+    NoTransitionPage(key: state.pageKey, child: child);
+
 GoRouter buildRouter() => GoRouter(
   initialLocation: '/prenota',
   routes: [
@@ -15,25 +21,30 @@ GoRouter buildRouter() => GoRouter(
       routes: [
         GoRoute(
           path: '/prenota',
-          builder: (context, state) => const BookingPage(),
+          pageBuilder: (context, state) =>
+              _destination(state, const BookingPage()),
         ),
         GoRoute(
           path: '/storico',
-          builder: (context, state) => const HistoryPage(),
+          pageBuilder: (context, state) =>
+              _destination(state, const HistoryPage()),
         ),
         GoRoute(
           path: '/admin',
-          builder: (context, state) => LayoutBuilder(
-            builder: (context, c) => c.maxWidth >= desktopBreakpoint
-                ? const AdminDashboardPage()
-                : const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(24),
-                      child: Text(
-                        'La dashboard amministrativa è pensata per schermi larghi.',
+          pageBuilder: (context, state) => _destination(
+            state,
+            LayoutBuilder(
+              builder: (context, c) => c.maxWidth >= desktopBreakpoint
+                  ? const AdminDashboardPage()
+                  : const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'La dashboard amministrativa è pensata per schermi larghi.',
+                        ),
                       ),
                     ),
-                  ),
+            ),
           ),
         ),
       ],

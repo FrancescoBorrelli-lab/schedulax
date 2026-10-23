@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:schedulax/src/app/app.dart';
+import 'package:schedulax/src/mobile/booking_page.dart';
+import 'package:schedulax/src/mobile/history_page.dart';
 import 'package:schedulax/src/shared/data/booking_repository.dart';
 
 void main() {
@@ -54,5 +56,20 @@ void main() {
     await tester.tap(find.text('Storico'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Anna'), findsOneWidget);
+  });
+
+  testWidgets('cambiando pagina non restano visibili due pagine insieme', (
+    tester,
+  ) async {
+    await pumpAt(tester, const Size(400, 900));
+    expect(find.byType(BookingPage), findsOneWidget);
+
+    await tester.tap(find.text('Storico'));
+    // Un solo frame dopo il tocco, a metà dell'eventuale transizione.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.byType(HistoryPage), findsOneWidget);
+    expect(find.byType(BookingPage), findsNothing);
   });
 }
