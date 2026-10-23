@@ -1,0 +1,23 @@
+# General
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+
+# IDE specific
+.idea/
+.vscode/
+
+# Configurazione locale (IMPORTANTE)
+.env
+.env.*
+!.env.example
